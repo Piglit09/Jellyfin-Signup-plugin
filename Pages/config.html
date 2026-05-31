@@ -1,0 +1,774 @@
+<div id="jellyfinSignupConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-controller="__plugin/jellyfin-signup.js">
+    <style>
+        #jellyfinSignupConfigurationPage .jfs-page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding-bottom: 4em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-header,
+        #jellyfinSignupConfigurationPage .jfs-panel {
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 8px;
+            background: rgba(20, 23, 28, .72);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .18);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-header {
+            display: flex;
+            gap: 1.5em;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 1.5em;
+            margin: 1em 0 1.5em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-kicker {
+            color: #00a4dc;
+            font-size: .82em;
+            font-weight: 700;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-title {
+            margin: .12em 0 .35em;
+            font-size: 2.1em;
+            line-height: 1.1;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-summary {
+            max-width: 54em;
+            margin: 0;
+            color: rgba(255, 255, 255, .74);
+            line-height: 1.55;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-header-actions,
+        #jellyfinSignupConfigurationPage .jfs-form-actions,
+        #jellyfinSignupConfigurationPage .jfs-row-actions,
+        #jellyfinSignupConfigurationPage .jfs-save-strip {
+            display: flex;
+            gap: .65em;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-header-actions {
+            justify-content: flex-end;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .75em;
+            margin-bottom: 1.1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status {
+            min-height: 4.6em;
+            padding: .95em 1em;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .045);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status-label,
+        #jellyfinSignupConfigurationPage .jfs-field-note {
+            color: rgba(255, 255, 255, .58);
+            font-size: .86em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status-value {
+            margin-top: .4em;
+            font-size: 1.08em;
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status.is-on .jfs-status-value {
+            color: #00d084;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-status.is-warn .jfs-status-value {
+            color: #ffb454;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-tabs {
+            display: flex;
+            gap: .5em;
+            flex-wrap: wrap;
+            margin: 0 0 .75em;
+            padding-bottom: .75em;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-tab {
+            min-height: 2.8em;
+            padding: 0 1em;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .82);
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-tab[aria-selected="true"] {
+            background: #00a4dc;
+            color: #fff;
+            border-color: #00a4dc;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-tab-panel[hidden] {
+            display: none;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-panel {
+            padding: 1.25em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-panel-wide,
+        #jellyfinSignupConfigurationPage .jfs-save-strip {
+            grid-column: 1 / -1;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-save-strip {
+            justify-content: space-between;
+            min-height: 4em;
+            padding: .8em 0 0;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1em;
+            margin-bottom: 1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-section-heading h2 {
+            margin: 0;
+            font-size: 1.35em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-section-heading p {
+            margin: .25em 0 0;
+            color: rgba(255, 255, 255, .62);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-two-col,
+        #jellyfinSignupConfigurationPage .jfs-color-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-color-grid {
+            gap: .85em 1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-copy-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: .75em;
+            align-items: end;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-message {
+            min-height: 1.5em;
+            margin: .65em 0 .85em;
+            color: #00d084;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-message.is-error {
+            color: #ff8080;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-textarea {
+            width: 100%;
+            min-height: 5.5em;
+            resize: vertical;
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            padding: .8em;
+            font: inherit;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-user-email {
+            width: 100%;
+            min-height: 3em;
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            padding: 0 .8em;
+            font: inherit;
+        }
+
+        #jellyfinSignupConfigurationPage input[type="color"].jfs-color-input {
+            min-height: 3.1em;
+            padding: .2em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-user-list {
+            display: grid;
+            gap: .65em;
+            max-height: 26em;
+            overflow: auto;
+            padding-right: .15em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-user-row {
+            display: grid;
+            grid-template-columns: minmax(12em, 1fr) minmax(16em, 1.3fr) auto;
+            gap: .8em;
+            align-items: end;
+            padding: .85em;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .04);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-user-name {
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-user-id {
+            margin-top: .25em;
+            overflow-wrap: anywhere;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview {
+            --preview-bg: #08070d;
+            --preview-panel: #15131d;
+            --preview-text: #f7f7fb;
+            --preview-muted: #bbb6c8;
+            --preview-primary: #00a4dc;
+            --preview-secondary: #aa5cc3;
+            min-height: 24em;
+            padding: 1.25em;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 8px;
+            background:
+                radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--preview-primary), transparent 72%), transparent 14em),
+                radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--preview-secondary), transparent 74%), transparent 16em),
+                var(--preview-bg);
+            color: var(--preview-text);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview-brand {
+            display: flex;
+            gap: .8em;
+            align-items: center;
+            margin-bottom: 1.2em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview-mark,
+        #jellyfinSignupConfigurationPage .jfs-preview-logo {
+            width: 3em;
+            height: 3em;
+            border-radius: 8px;
+            background:
+                radial-gradient(circle at 50% 35%, #ffffff 0 8%, transparent 9%),
+                conic-gradient(from 210deg, var(--preview-primary), var(--preview-secondary), var(--preview-primary));
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview-logo {
+            object-fit: contain;
+            background: transparent;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview h3 {
+            margin: 0;
+            font-size: 1.45em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview p {
+            margin: .65em 0 1.1em;
+            color: var(--preview-muted);
+            line-height: 1.5;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview-box {
+            max-width: 24em;
+            padding: 1em;
+            border: 1px solid color-mix(in srgb, var(--preview-muted), transparent 65%);
+            border-radius: 8px;
+            background: var(--preview-panel);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-preview-button {
+            min-height: 2.75em;
+            margin-top: .8em;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--preview-primary), var(--preview-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-created-code {
+            display: flex;
+            gap: .75em;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: .85em 1em;
+            border: 1px solid rgba(0, 208, 132, .24);
+            border-radius: 8px;
+            background: rgba(0, 208, 132, .08);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-created-code code {
+            display: block;
+            margin-top: .25em;
+            color: #fff;
+            font: 700 1em/1.4 Consolas, "Liberation Mono", monospace;
+            overflow-wrap: anywhere;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-invite-list {
+            display: grid;
+            gap: .75em;
+            margin-top: 1em;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-invite-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 1em;
+            align-items: center;
+            padding: 1em;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .04);
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-invite-title {
+            display: flex;
+            gap: .65em;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: .25em;
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.8em;
+            padding: 0 .7em;
+            border-radius: 999px;
+            background: rgba(0, 164, 220, .18);
+            color: #9ee7ff;
+            font-size: .82em;
+            font-weight: 700;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-pill.is-active {
+            background: rgba(0, 208, 132, .18);
+            color: #84f0c2;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-pill.is-disabled {
+            background: rgba(255, 128, 128, .16);
+            color: #ffb0b0;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-empty {
+            padding: 1.25em;
+            border: 1px dashed rgba(255, 255, 255, .16);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, .66);
+            text-align: center;
+        }
+
+        #jellyfinSignupConfigurationPage .jfs-danger {
+            color: #ffb0b0;
+        }
+
+        @media (max-width: 920px) {
+            #jellyfinSignupConfigurationPage .jfs-header,
+            #jellyfinSignupConfigurationPage .jfs-invite-row,
+            #jellyfinSignupConfigurationPage .jfs-user-row {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #jellyfinSignupConfigurationPage .jfs-grid,
+            #jellyfinSignupConfigurationPage .jfs-status-grid,
+            #jellyfinSignupConfigurationPage .jfs-two-col,
+            #jellyfinSignupConfigurationPage .jfs-color-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #jellyfinSignupConfigurationPage .jfs-copy-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div data-role="content">
+        <div class="content-primary jfs-page">
+            <section class="jfs-header">
+                <div>
+                    <div class="jfs-kicker">Jellyfin Plugin</div>
+                    <h1 class="jfs-title">Jellyfin Signup</h1>
+                    <p class="jfs-summary">Account creation, optional invite codes, email verification, password reset, and public signup page controls.</p>
+                </div>
+                <div class="jfs-header-actions">
+                    <button is="emby-button" type="button" class="raised button-submit" id="openPublicSignup">
+                        <span>Open Signup</span>
+                    </button>
+                    <button is="emby-button" type="button" class="raised cancel" id="refreshSignupSettings">
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </section>
+
+            <div class="jfs-status-grid">
+                <div class="jfs-status" id="statusSignup">
+                    <div class="jfs-status-label">Signup</div>
+                    <div class="jfs-status-value">Loading</div>
+                </div>
+                <div class="jfs-status" id="statusInvites">
+                    <div class="jfs-status-label">Invite Codes</div>
+                    <div class="jfs-status-value">Loading</div>
+                </div>
+                <div class="jfs-status" id="statusLoginButton">
+                    <div class="jfs-status-label">Login Button</div>
+                    <div class="jfs-status-value">Loading</div>
+                </div>
+                <div class="jfs-status" id="statusEmail">
+                    <div class="jfs-status-label">Email</div>
+                    <div class="jfs-status-value">Loading</div>
+                </div>
+            </div>
+
+            <div class="jfs-tabs" role="tablist" aria-label="Signup plugin settings">
+                <button type="button" class="jfs-tab" data-jfs-tab="general" aria-selected="true" aria-controls="jfsTabGeneral">General</button>
+                <button type="button" class="jfs-tab" data-jfs-tab="email" aria-selected="false" aria-controls="jfsTabEmail">Email &amp; Users</button>
+                <button type="button" class="jfs-tab" data-jfs-tab="appearance" aria-selected="false" aria-controls="jfsTabAppearance">Appearance</button>
+                <button type="button" class="jfs-tab" data-jfs-tab="invites" aria-selected="false" aria-controls="jfsTabInvites">Invites</button>
+            </div>
+
+            <div id="settingsMessage" class="jfs-message"></div>
+
+            <form class="jellyfin-signup-settings">
+                <section class="jfs-tab-panel" id="jfsTabGeneral" data-jfs-panel="general">
+                    <div class="jfs-grid">
+                        <section class="jfs-panel">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Access</h2>
+                                    <p>Account creation controls.</p>
+                                </div>
+                            </div>
+
+                            <label class="checkboxContainer">
+                                <input is="emby-checkbox" type="checkbox" id="signupEnabled">
+                                <span>Enable signup</span>
+                            </label>
+                            <label class="checkboxContainer">
+                                <input is="emby-checkbox" type="checkbox" id="requireInvite">
+                                <span>Require invite code</span>
+                            </label>
+
+                            <div class="jfs-copy-row">
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="publicSignupUrl">Public signup URL</label>
+                                    <input is="emby-input" id="publicSignupUrl" type="text" readonly>
+                                </div>
+                                <button is="emby-button" type="button" class="raised cancel" id="copyPublicSignupUrl">
+                                    <span>Copy</span>
+                                </button>
+                            </div>
+                        </section>
+
+                        <section class="jfs-panel">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Login Page</h2>
+                                    <p>Signup action shown on the Jellyfin login page.</p>
+                                </div>
+                            </div>
+
+                            <label class="checkboxContainer">
+                                <input is="emby-checkbox" type="checkbox" id="loginButtonEnabled">
+                                <span>Show signup button on login page</span>
+                            </label>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="loginButtonText">Button text</label>
+                                <input is="emby-input" id="loginButtonText" type="text" maxlength="40">
+                            </div>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="loginButtonTargetUrl">Custom button URL</label>
+                                <input is="emby-input" id="loginButtonTargetUrl" type="url" placeholder="Blank uses the public signup page">
+                            </div>
+                            <div class="jfs-field-note">The button only appears when signup is enabled and is synced through Jellyfin branding.</div>
+                        </section>
+
+                        <section class="jfs-panel">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Defaults</h2>
+                                    <p>Policy used when no invite-specific policy applies.</p>
+                                </div>
+                            </div>
+
+                            <div class="selectContainer">
+                                <label class="selectLabel" for="defaultPolicyPresetId">Default policy</label>
+                                <select is="emby-select" id="defaultPolicyPresetId"></select>
+                            </div>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="defaultEnabledFolderIds">Default folder IDs</label>
+                                <input is="emby-input" id="defaultEnabledFolderIds" type="text">
+                            </div>
+                        </section>
+
+                        <div class="jfs-save-strip">
+                            <div class="jfs-field-note">Public signup hides the invite code field when invite codes are not required.</div>
+                            <button is="emby-button" type="submit" class="raised button-submit">
+                                <span>Save Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="jfs-tab-panel" id="jfsTabEmail" data-jfs-panel="email" hidden>
+                    <div class="jfs-grid">
+                        <section class="jfs-panel jfs-panel-wide">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Email Delivery</h2>
+                                    <p>SMTP for verification and password reset codes.</p>
+                                </div>
+                                <button is="emby-button" type="button" class="raised cancel" id="sendTestEmail">
+                                    <span>Send Test</span>
+                                </button>
+                            </div>
+
+                            <label class="checkboxContainer">
+                                <input is="emby-checkbox" type="checkbox" id="emailEnabled">
+                                <span>Enable email verification and reset</span>
+                            </label>
+
+                            <div class="jfs-two-col">
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="smtpHost">SMTP host</label>
+                                    <input is="emby-input" id="smtpHost" type="text">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="smtpPort">SMTP port</label>
+                                    <input is="emby-input" id="smtpPort" type="number" min="1" max="65535">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="smtpUsername">SMTP username</label>
+                                    <input is="emby-input" id="smtpUsername" type="text" autocomplete="username">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="smtpPassword">SMTP password</label>
+                                    <input is="emby-input" id="smtpPassword" type="password" autocomplete="new-password" placeholder="Leave blank to keep current password">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="fromAddress">From address</label>
+                                    <input is="emby-input" id="fromAddress" type="email">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="fromName">From name</label>
+                                    <input is="emby-input" id="fromName" type="text">
+                                </div>
+                                <div class="inputContainer jfs-panel-wide">
+                                    <label class="inputLabel inputLabelUnfocused" for="emailPublicSignupUrl">Email verification URL</label>
+                                    <input is="emby-input" id="emailPublicSignupUrl" type="url">
+                                    <div class="jfs-field-note">Use the Jellyfin address email recipients can open, for example http://10.16.0.143:8096/signup.html.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="verificationLinkMinutes">Verification link minutes</label>
+                                    <input is="emby-input" id="verificationLinkMinutes" type="number" min="10" max="1440">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="resetCodeMinutes">Reset code minutes</label>
+                                    <input is="emby-input" id="resetCodeMinutes" type="number" min="5" max="120">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="testRecipient">Test recipient</label>
+                                    <input is="emby-input" id="testRecipient" type="email">
+                                </div>
+                            </div>
+
+                            <label class="checkboxContainer">
+                                <input is="emby-checkbox" type="checkbox" id="smtpSsl">
+                                <span>Use SSL/TLS</span>
+                            </label>
+                        </section>
+
+                        <section class="jfs-panel jfs-panel-wide">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>User Emails</h2>
+                                    <p>Email addresses used for password reset code delivery.</p>
+                                </div>
+                                <div class="jfs-field-note" id="userEmailSummary">Loading users</div>
+                            </div>
+                            <div class="jfs-field-note">Signup-created users are tracked automatically. Add or update emails here for existing Jellyfin users.</div>
+                            <div id="userEmailList" class="jfs-user-list" style="margin-top: 1em;"></div>
+                        </section>
+
+                        <div class="jfs-save-strip">
+                            <div class="jfs-field-note">Saving also updates the email mapping list used by reset code verification.</div>
+                            <button is="emby-button" type="submit" class="raised button-submit">
+                                <span>Save Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="jfs-tab-panel" id="jfsTabAppearance" data-jfs-panel="appearance" hidden>
+                    <div class="jfs-grid">
+                        <section class="jfs-panel">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Signup Page</h2>
+                                    <p>Text, logo, and colors for the public page.</p>
+                                </div>
+                            </div>
+
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="appearancePageTitle">Browser title</label>
+                                <input is="emby-input" id="appearancePageTitle" type="text" maxlength="80">
+                            </div>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="appearanceHeading">Heading</label>
+                                <input is="emby-input" id="appearanceHeading" type="text" maxlength="80">
+                            </div>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="appearanceIntroText">Intro text</label>
+                                <textarea id="appearanceIntroText" class="jfs-textarea" maxlength="180"></textarea>
+                            </div>
+                            <div class="inputContainer">
+                                <label class="inputLabel inputLabelUnfocused" for="appearanceLogoUrl">Logo URL</label>
+                                <input is="emby-input" id="appearanceLogoUrl" type="url" placeholder="Blank uses the built-in mark">
+                            </div>
+
+                            <div class="jfs-color-grid">
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearanceBackgroundColor">Background</label>
+                                    <input id="appearanceBackgroundColor" class="jfs-color-input" type="color">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearancePanelColor">Panel</label>
+                                    <input id="appearancePanelColor" class="jfs-color-input" type="color">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearanceTextColor">Text</label>
+                                    <input id="appearanceTextColor" class="jfs-color-input" type="color">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearanceMutedTextColor">Muted text</label>
+                                    <input id="appearanceMutedTextColor" class="jfs-color-input" type="color">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearancePrimaryColor">Primary accent</label>
+                                    <input id="appearancePrimaryColor" class="jfs-color-input" type="color">
+                                </div>
+                                <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="appearanceSecondaryColor">Secondary accent</label>
+                                    <input id="appearanceSecondaryColor" class="jfs-color-input" type="color">
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="jfs-panel">
+                            <div class="jfs-section-heading">
+                                <div>
+                                    <h2>Preview</h2>
+                                    <p>Approximate public signup styling.</p>
+                                </div>
+                            </div>
+
+                            <div class="jfs-preview" id="appearancePreview">
+                                <div class="jfs-preview-brand">
+                                    <div class="jfs-preview-mark" id="appearancePreviewMark" aria-hidden="true"></div>
+                                    <img class="jfs-preview-logo" id="appearancePreviewLogo" alt="" hidden>
+                                    <div>
+                                        <h3 id="appearancePreviewHeading">Jellyfin Signup</h3>
+                                    </div>
+                                </div>
+                                <p id="appearancePreviewIntro">Create your Jellyfin account, then verify your email before signing in.</p>
+                                <div class="jfs-preview-box">
+                                    <div class="jfs-field-note">Username</div>
+                                    <div style="height: 2.6em; border: 1px solid color-mix(in srgb, var(--preview-muted), transparent 70%); border-radius: 6px; margin-top: .4em;"></div>
+                                    <div class="jfs-preview-button">Create Account</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="jfs-save-strip">
+                            <div class="jfs-field-note">Appearance changes apply to the standalone public signup page.</div>
+                            <button is="emby-button" type="submit" class="raised button-submit">
+                                <span>Save Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </form>
+
+            <section class="jfs-tab-panel" id="jfsTabInvites" data-jfs-panel="invites" hidden>
+                <section class="jfs-panel jfs-panel-wide">
+                    <div class="jfs-section-heading">
+                        <div>
+                            <h2>Invites</h2>
+                            <p>Create and manage invite codes.</p>
+                        </div>
+                    </div>
+
+                    <form class="jellyfin-signup-invite-form jfs-grid">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="inviteLabel">Label</label>
+                            <input is="emby-input" id="inviteLabel" type="text">
+                            <div class="jfs-field-note">This is an admin label only. The invite code is generated after creation.</div>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="inviteMaxUses">Max uses</label>
+                            <input is="emby-input" id="inviteMaxUses" type="number" min="0" value="1">
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="inviteExpiresAt">Expires</label>
+                            <input is="emby-input" id="inviteExpiresAt" type="datetime-local">
+                        </div>
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="invitePolicyPresetId">Policy</label>
+                            <select is="emby-select" id="invitePolicyPresetId"></select>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="inviteEnabledFolderIds">Folder IDs</label>
+                            <input is="emby-input" id="inviteEnabledFolderIds" type="text">
+                        </div>
+                        <label class="checkboxContainer">
+                            <input is="emby-checkbox" type="checkbox" id="inviteEmailRequired" checked>
+                            <span>Require email</span>
+                        </label>
+                        <div class="jfs-form-actions jfs-panel-wide">
+                            <button is="emby-button" type="submit" class="raised button-submit">
+                                <span>Create Invite</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="createdInvite" class="jfs-message"></div>
+                    <div id="inviteList" class="jfs-invite-list"></div>
+                </section>
+            </section>
+        </div>
+    </div>
+</div>

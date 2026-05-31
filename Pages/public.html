@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jellyfin Signup</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #08070d;
+            --panel: #15131d;
+            --panel-2: #1f1b2a;
+            --text: #f7f7fb;
+            --muted: #bbb6c8;
+            --line: #353044;
+            --accent: #00a4dc;
+            --accent-2: #aa5cc3;
+            --danger: #ff7b7b;
+            --ok: #62d99c;
+            --input: #0f0d15;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 25% 10%, color-mix(in srgb, var(--accent), transparent 80%), transparent 30rem),
+                radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--accent-2), transparent 82%), transparent 26rem),
+                var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        main {
+            width: min(980px, calc(100vw - 32px));
+            min-height: 100vh;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, .86fr) minmax(320px, 1fr);
+            gap: 36px;
+            align-items: center;
+            padding: 32px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .mark,
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+        }
+
+        .mark {
+            background:
+                radial-gradient(circle at 50% 35%, #ffffff 0 8%, transparent 9%),
+                conic-gradient(from 210deg, var(--accent), var(--accent-2), var(--accent));
+            box-shadow: 0 0 34px color-mix(in srgb, var(--accent), transparent 64%);
+        }
+
+        .logo {
+            object-fit: contain;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 42px;
+            font-weight: 760;
+            letter-spacing: 0;
+        }
+
+        .lede {
+            max-width: 36rem;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.55;
+        }
+
+        .panel {
+            background: color-mix(in srgb, var(--panel), transparent 6%);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .38);
+            padding: 24px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .tab,
+        button {
+            border: 0;
+            border-radius: 6px;
+            min-height: 44px;
+            color: var(--text);
+            background: var(--panel-2);
+            font: inherit;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        .tab[aria-selected="true"],
+        button.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+        }
+
+        button:disabled {
+            cursor: default;
+            opacity: .52;
+        }
+
+        form {
+            display: grid;
+            gap: 14px;
+        }
+
+        label {
+            display: grid;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        input {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--input);
+            color: var(--text);
+            padding: 0 12px;
+            font: inherit;
+        }
+
+        input:focus {
+            outline: 2px solid color-mix(in srgb, var(--accent), transparent 35%);
+            outline-offset: 1px;
+        }
+
+        .stack {
+            display: grid;
+            gap: 16px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            min-height: 24px;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .message.ok {
+            color: var(--ok);
+        }
+
+        .message.error {
+            color: var(--danger);
+        }
+
+        .reset-confirm {
+            padding-top: 10px;
+            border-top: 1px solid var(--line);
+        }
+
+        @media (max-width: 760px) {
+            main {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                align-items: start;
+                padding-top: 28px;
+            }
+
+            h1 {
+                font-size: 34px;
+            }
+
+            .lede {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section>
+            <div class="brand">
+                <div class="mark" id="brandMark" aria-hidden="true"></div>
+                <img class="logo hidden" id="brandLogo" alt="">
+                <div>
+                    <h1 id="pageHeading">Jellyfin Signup</h1>
+                </div>
+            </div>
+            <p class="lede" id="pageIntro">Create your Jellyfin account, then verify your email before signing in.</p>
+        </section>
+
+        <section class="panel" aria-live="polite">
+            <div class="tabs" role="tablist" aria-label="Signup actions">
+                <button class="tab" id="signupTab" type="button" aria-selected="true">Sign Up</button>
+                <button class="tab" id="resetTab" type="button" aria-selected="false">Reset Password</button>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <form id="signupForm" class="stack">
+                <label id="inviteField">Invite code
+                    <input name="inviteCode" autocomplete="one-time-code" autocapitalize="none" spellcheck="false" placeholder="Paste invite code">
+                </label>
+                <label>Username
+                    <input name="username" autocomplete="username" required minlength="3" maxlength="32">
+                </label>
+                <label>Email
+                    <input name="email" type="email" autocomplete="email" required>
+                </label>
+                <label>Password
+                    <input name="password" type="password" autocomplete="new-password" required minlength="8">
+                </label>
+                <label>Confirm password
+                    <input name="confirmPassword" type="password" autocomplete="new-password" required minlength="8">
+                </label>
+                <button class="primary" type="submit" id="createAccountButton">Create Account</button>
+            </form>
+
+            <form id="resetForm" class="stack hidden">
+                <label>Email
+                    <input name="email" type="email" autocomplete="email" required>
+                </label>
+                <button class="primary" type="submit">Send Reset Code</button>
+                <div class="stack reset-confirm">
+                    <label>Reset code
+                        <input name="code" autocomplete="one-time-code">
+                    </label>
+                    <label>New password
+                        <input name="password" type="password" autocomplete="new-password" minlength="8">
+                    </label>
+                    <label>Confirm new password
+                        <input name="confirmPassword" type="password" autocomplete="new-password" minlength="8">
+                    </label>
+                    <button type="button" id="confirmReset">Reset Password</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const appearanceDefaults = {
+            backgroundColor: '#08070d',
+            heading: 'Jellyfin Signup',
+            introText: 'Create your Jellyfin account, then verify your email before signing in.',
+            logoUrl: '',
+            mutedTextColor: '#bbb6c8',
+            pageTitle: 'Jellyfin Signup',
+            panelColor: '#15131d',
+            primaryColor: '#00a4dc',
+            secondaryColor: '#aa5cc3',
+            textColor: '#f7f7fb'
+        };
+        const message = document.querySelector('#message');
+        const signupForm = document.querySelector('#signupForm');
+        const resetForm = document.querySelector('#resetForm');
+        const signupTab = document.querySelector('#signupTab');
+        const resetTab = document.querySelector('#resetTab');
+        const inviteField = document.querySelector('#inviteField');
+        const inviteInput = inviteField.querySelector('input');
+        const createAccountButton = document.querySelector('#createAccountButton');
+        let publicSettings = {
+            enabled: true,
+            requireInvite: true,
+            emailEnabled: true,
+            appearanceSettings: appearanceDefaults
+        };
+
+        function basePath() {
+            return window.location.pathname.replace(/\/signup(?:\.html)?\/?$/i, '').replace(/\/$/, '');
+        }
+
+        function apiUrl(path) {
+            return `${window.location.origin}${basePath()}/${path}`.replace(/([^:]\/)\/+/g, '$1');
+        }
+
+        function signupUrl() {
+            return `${window.location.origin}${basePath()}/signup.html`.replace(/([^:]\/)\/+/g, '$1');
+        }
+
+        function loginUrl() {
+            return `${window.location.origin}${basePath()}/web/#/login.html`.replace(/([^:]\/)\/+/g, '$1');
+        }
+
+        function setMessage(text, type) {
+            message.textContent = text || '';
+            message.className = `message ${type || ''}`;
+        }
+
+        function normalizeHex(value, fallback) {
+            const cleaned = String(value || '').trim();
+            return /^#[0-9a-f]{6}$/i.test(cleaned) ? cleaned.toLowerCase() : fallback;
+        }
+
+        function setCssVariable(name, value, fallback) {
+            document.documentElement.style.setProperty(name, normalizeHex(value, fallback));
+        }
+
+        function applyAppearance(appearanceSettings) {
+            const appearance = {
+                ...appearanceDefaults,
+                ...(appearanceSettings || {})
+            };
+            const logoUrl = (appearance.logoUrl || '').trim();
+
+            document.title = appearance.pageTitle || appearanceDefaults.pageTitle;
+            document.querySelector('#pageHeading').textContent = appearance.heading || appearanceDefaults.heading;
+            document.querySelector('#pageIntro').textContent = appearance.introText || appearanceDefaults.introText;
+            setCssVariable('--bg', appearance.backgroundColor, appearanceDefaults.backgroundColor);
+            setCssVariable('--panel', appearance.panelColor, appearanceDefaults.panelColor);
+            setCssVariable('--text', appearance.textColor, appearanceDefaults.textColor);
+            setCssVariable('--muted', appearance.mutedTextColor, appearanceDefaults.mutedTextColor);
+            setCssVariable('--accent', appearance.primaryColor, appearanceDefaults.primaryColor);
+            setCssVariable('--accent-2', appearance.secondaryColor, appearanceDefaults.secondaryColor);
+
+            if (logoUrl) {
+                document.querySelector('#brandLogo').src = logoUrl;
+                document.querySelector('#brandLogo').classList.remove('hidden');
+                document.querySelector('#brandMark').classList.add('hidden');
+            } else {
+                document.querySelector('#brandLogo').removeAttribute('src');
+                document.querySelector('#brandLogo').classList.add('hidden');
+                document.querySelector('#brandMark').classList.remove('hidden');
+            }
+        }
+
+        function applyPublicSettings(settings) {
+            publicSettings = {
+                ...publicSettings,
+                ...(settings || {})
+            };
+
+            applyAppearance(publicSettings.appearanceSettings);
+            inviteField.classList.toggle('hidden', publicSettings.requireInvite === false);
+            inviteInput.disabled = publicSettings.requireInvite === false;
+            createAccountButton.disabled = !publicSettings.enabled;
+
+            if (!publicSettings.enabled) {
+                setMessage('Jellyfin signup is not enabled.', 'error');
+            }
+        }
+
+        async function get(path) {
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 12000);
+
+            try {
+                const response = await fetch(apiUrl(path), {
+                    headers: {
+                        Accept: 'application/json'
+                    },
+                    signal: controller.signal
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(payload.error || payload.message || 'Request failed.');
+                }
+
+                return payload;
+            } finally {
+                window.clearTimeout(timeout);
+            }
+        }
+
+        async function post(path, body) {
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 20000);
+
+            try {
+                const response = await fetch(apiUrl(path), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body || {}),
+                    signal: controller.signal
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(payload.error || payload.message || 'Request failed.');
+                }
+
+                return payload;
+            } catch (err) {
+                if (err?.name === 'AbortError') {
+                    throw new Error('Request timed out. Check that this verification link uses a reachable Jellyfin URL.');
+                }
+
+                throw err;
+            } finally {
+                window.clearTimeout(timeout);
+            }
+        }
+
+        async function loadPublicSettings() {
+            try {
+                applyPublicSettings(await get('Signup/v1/public/settings'));
+            } catch {
+                applyPublicSettings(publicSettings);
+            }
+        }
+
+        function useTab(tab) {
+            const signup = tab === 'signup';
+            signupForm.classList.toggle('hidden', !signup);
+            resetForm.classList.toggle('hidden', signup);
+            signupTab.setAttribute('aria-selected', String(signup));
+            resetTab.setAttribute('aria-selected', String(!signup));
+            setMessage('');
+
+            if (signup && !publicSettings.enabled) {
+                setMessage('Jellyfin signup is not enabled.', 'error');
+            }
+        }
+
+        signupTab.addEventListener('click', () => useTab('signup'));
+        resetTab.addEventListener('click', () => useTab('reset'));
+
+        signupForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const data = Object.fromEntries(new FormData(signupForm).entries());
+            try {
+                const result = await post('Signup/v1/create-user', {
+                    inviteCode: publicSettings.requireInvite === false ? null : data.inviteCode,
+                    username: data.username,
+                    email: data.email,
+                    password: data.password,
+                    confirmPassword: data.confirmPassword,
+                    verificationBaseUrl: signupUrl()
+                });
+                setMessage(result.message, result.ok ? 'ok' : 'error');
+                if (result.ok) {
+                    signupForm.reset();
+                }
+            } catch (err) {
+                setMessage(err.message, 'error');
+            }
+        });
+
+        resetForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const data = Object.fromEntries(new FormData(resetForm).entries());
+            try {
+                const result = await post('Signup/v1/password-reset/request', {
+                    email: data.email
+                });
+                setMessage(result.message, result.ok ? 'ok' : 'error');
+            } catch (err) {
+                setMessage(err.message, 'error');
+            }
+        });
+
+        document.querySelector('#confirmReset').addEventListener('click', async () => {
+            const data = Object.fromEntries(new FormData(resetForm).entries());
+            try {
+                const result = await post('Signup/v1/password-reset/confirm', {
+                    email: data.email,
+                    code: data.code,
+                    password: data.password,
+                    confirmPassword: data.confirmPassword
+                });
+                setMessage(result.message, result.ok ? 'ok' : 'error');
+                if (result.ok) {
+                    resetForm.reset();
+                }
+            } catch (err) {
+                setMessage(err.message, 'error');
+            }
+        });
+
+        function verifyEmailFromUrl() {
+            const verifyToken = new URLSearchParams(window.location.search).get('verify');
+            if (!verifyToken) {
+                return;
+            }
+
+            setMessage('Verifying email...');
+            post('Signup/v1/verify-email', { token: verifyToken })
+                .then(result => {
+                    setMessage(result.ok ? `${result.message} Redirecting to sign in...` : result.message, result.ok ? 'ok' : 'error');
+                    if (result.ok) {
+                        window.setTimeout(() => {
+                            window.location.assign(loginUrl());
+                        }, 2200);
+                    }
+                })
+                .catch(err => setMessage(err.message, 'error'));
+        }
+
+        loadPublicSettings().finally(verifyEmailFromUrl);
+    </script>
+</body>
+</html>
