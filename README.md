@@ -31,22 +31,26 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 
 ## Installation
 
-### Manual Install
+Install Jellyfin Signup from the plugin repository:
 
-1. Download or build `Jellyfin.Plugin.Signup_0.1.0.zip`.
-2. Stop Jellyfin.
-3. Extract the zip into Jellyfin's plugin directory.
-4. Start Jellyfin.
-5. Open the Jellyfin dashboard and configure **Jellyfin Signup**.
+```text
+https://raw.githubusercontent.com/Piglit09/jellyfin-plugin-signup-repo/main/manifest.json
+```
 
-The packaged zip is created from the publish output and contains:
+1. Open the Jellyfin dashboard.
+2. Go to **Plugins**.
+3. Open **Repositories**.
+4. Add a new repository:
+   - Repository name: `Jellyfin Signup`
+   - Repository URL: `https://raw.githubusercontent.com/Piglit09/jellyfin-plugin-signup-repo/main/manifest.json`
+5. Go back to **Catalog**.
+6. Install **Jellyfin Signup**.
+7. Restart Jellyfin if prompted.
+8. Open the Jellyfin dashboard and configure **Jellyfin Signup**.
 
-- `Jellyfin.Plugin.Signup.dll`
-- `Jellyfin.Plugin.Signup.deps.json`
-- `Jellyfin.Plugin.Signup.pdb`
-- `Jellyfin.Plugin.Signup.xml`
+Repository source: [Piglit09/jellyfin-plugin-signup-repo](https://github.com/Piglit09/jellyfin-plugin-signup-repo)
 
-### Build Locally
+### Local Build Package
 
 ```powershell
 dotnet build Jellyfin.Plugin.Signup.csproj -c Release
