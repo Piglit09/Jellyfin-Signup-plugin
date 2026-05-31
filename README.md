@@ -1,6 +1,6 @@
 # Jellyfin Signup Plugin
 
-Invite-based public signup, email verification, password reset, and login-page signup button support for Jellyfin.
+Public signup, email verification, password reset, and login-page signup button support for Jellyfin.
 
 This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboard for managing account creation. It is built for Jellyfin `10.11.10` and targets `.NET 9`.
 
