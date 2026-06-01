@@ -24,11 +24,11 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 
 | Item | Value |
 | --- | --- |
-| Plugin version | `0.1.3` |
+| Plugin version | `0.1.4` |
 | Target Jellyfin ABI | `10.11.10.0` |
 | Target framework | `net9.0` |
-| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.3.zip` |
-| SHA256 | `A59433A9388AD77056246A2663A1ABE9B2A84BB81FBF9013CD4A116DEC4BAD52` |
+| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.4.zip` |
+| Jellyfin manifest checksum (MD5) | `0377358777DB9742AF667A123FD31717` |
 
 ## Installation
 
@@ -67,7 +67,7 @@ Repository source: [Piglit09/jellyfin-plugin-signup-repo](https://github.com/Pig
 ```powershell
 dotnet build Jellyfin.Plugin.Signup.csproj -c Release
 dotnet publish Jellyfin.Plugin.Signup.csproj -c Release -o artifacts\publish
-Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.3.zip -Force
+Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.4.zip -Force
 ```
 
 ## Configuration
@@ -157,7 +157,7 @@ For existing Jellyfin users, add their email in the **Email & Users** tab. Signu
 `manifest.template.json` contains the current plugin manifest entry. Before publishing a public release, replace the placeholder release URL:
 
 ```json
-"sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/v0.1.3/Jellyfin.Plugin.Signup_0.1.3.zip"
+"sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/0.1.4/Jellyfin.Plugin.Signup_0.1.4.zip"
 ```
 
 with the real GitHub release URL.
@@ -184,4 +184,4 @@ $script | node --check
 
 ## Status
 
-This is an early `0.1.3` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.
+This is an early `0.1.4` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.
