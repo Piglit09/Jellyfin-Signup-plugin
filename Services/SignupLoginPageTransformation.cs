@@ -59,6 +59,183 @@ function loadJellyfinSignupButton(context, apiClient) {
 }
 """;
 
+    private const string LoginBundlePatch = """
+
+;(() => {
+    const patchMarker = 'jellyfin-signup-login-native-patch-v2';
+
+    if (window[patchMarker]) {
+        return;
+    }
+
+    window[patchMarker] = true;
+
+    function getBasePath() {
+        return window.location.pathname
+            .replace(/\/web\/?.*$/i, '')
+            .replace(/\/$/, '');
+    }
+
+    function normalizeUrl(path) {
+        const cleaned = (path || '').replace(/^\/+/, '');
+        const base = `${window.location.origin}${getBasePath()}`;
+        return `${base}/${cleaned}`.replace(/([^:]\/)\/+/g, '$1');
+    }
+
+    function getPluginUrl(path) {
+        if (window.ApiClient?.getUrl) {
+            return window.ApiClient.getUrl(path);
+        }
+
+        return normalizeUrl(path);
+    }
+
+    function getSignupUrl(targetUrl) {
+        const cleaned = (targetUrl || '').trim();
+
+        if (!cleaned) {
+            return getPluginUrl('signup.html');
+        }
+
+        if (/^https?:\/\//i.test(cleaned)) {
+            return cleaned;
+        }
+
+        return getPluginUrl(cleaned.replace(/^\/+/, ''));
+    }
+
+    function getPasswordResetUrl() {
+        const signupUrl = getPluginUrl('signup.html');
+        return `${signupUrl}${signupUrl.includes('?') ? '&' : '?'}reset=1`;
+    }
+
+    function setButtonText(button, text) {
+        const label = button.querySelector('span') || button;
+        label.textContent = text || 'Create Account';
+    }
+
+    function ensureStyle() {
+        if (document.getElementById('jellyfin-signup-login-style')) {
+            return;
+        }
+
+        const style = document.createElement('style');
+        style.id = 'jellyfin-signup-login-style';
+        style.textContent = `
+            #loginPage .btnSignup.hide { display: none !important; }
+            #loginPage .btnSignup { margin-top: .5em; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    async function loadSignupButton(button) {
+        try {
+            const response = await fetch(getPluginUrl('Signup/v1/public/login-button'), {
+                credentials: 'same-origin',
+                headers: { Accept: 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Signup button request failed with ${response.status}`);
+            }
+
+            const settings = await response.json();
+
+            if (!settings?.enabled) {
+                button.classList.add('hide');
+                button.dataset.signupUrl = '';
+                return;
+            }
+
+            setButtonText(button, settings.text);
+            button.dataset.signupUrl = getSignupUrl(settings.targetUrl);
+            button.classList.remove('hide');
+        } catch {
+            button.classList.add('hide');
+            button.dataset.signupUrl = '';
+        }
+    }
+
+    function createSignupButton() {
+        const button = document.createElement('button', { is: 'emby-button' });
+        button.setAttribute('is', 'emby-button');
+        button.type = 'button';
+        button.className = 'raised button-submit block btnSignup emby-button hide';
+
+        const label = document.createElement('span');
+        label.textContent = 'Create Account';
+        button.appendChild(label);
+
+        return button;
+    }
+
+    function ensureSignupButton(container, forgotPasswordButton) {
+        let signupButton = container.querySelector('.btnSignup');
+
+        if (!signupButton) {
+            signupButton = createSignupButton();
+            container.insertBefore(signupButton, forgotPasswordButton);
+        }
+
+        if (signupButton.dataset.jellyfinSignupBound !== 'true') {
+            signupButton.dataset.jellyfinSignupBound = 'true';
+            signupButton.addEventListener('click', event => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const targetUrl = signupButton.dataset.signupUrl || getSignupUrl();
+                window.location.href = targetUrl;
+            });
+        }
+
+        if (signupButton.dataset.jellyfinSignupLoaded !== 'true') {
+            signupButton.dataset.jellyfinSignupLoaded = 'true';
+            loadSignupButton(signupButton);
+        }
+    }
+
+    function patchForgotPassword(forgotPasswordButton) {
+        if (forgotPasswordButton.dataset.jellyfinSignupResetBound === 'true') {
+            return;
+        }
+
+        forgotPasswordButton.dataset.jellyfinSignupResetBound = 'true';
+        forgotPasswordButton.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            window.location.href = getPasswordResetUrl();
+        }, true);
+    }
+
+    function patchLoginPage() {
+        const loginPage = document.querySelector('#loginPage');
+
+        if (!loginPage) {
+            return;
+        }
+
+        const forgotPasswordButton = loginPage.querySelector('.btnForgotPassword');
+        const container = forgotPasswordButton?.parentElement || loginPage.querySelector('.readOnlyContent');
+
+        if (!container || !forgotPasswordButton) {
+            return;
+        }
+
+        ensureStyle();
+        ensureSignupButton(container, forgotPasswordButton);
+        patchForgotPassword(forgotPasswordButton);
+    }
+
+    const observer = new MutationObserver(patchLoginPage);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    document.addEventListener('DOMContentLoaded', patchLoginPage);
+    document.addEventListener('viewshow', patchLoginPage, true);
+    window.addEventListener('hashchange', patchLoginPage);
+    patchLoginPage();
+})();
+""";
+
     /// <summary>
     /// Patches the Jellyfin login HTML.
     /// </summary>
@@ -95,6 +272,23 @@ function loadJellyfinSignupButton(context, apiClient) {
         contents = EnsureSignupButtonLoad(contents);
 
         return contents;
+    }
+
+    /// <summary>
+    /// Patches the bundled Jellyfin web app login runtime.
+    /// </summary>
+    /// <param name="payload">Transformation payload.</param>
+    /// <returns>Patched contents.</returns>
+    public static string LoginBundleJs(SignupFileTransformationPayload payload)
+    {
+        var contents = payload.Contents ?? string.Empty;
+
+        if (contents.Contains("jellyfin-signup-login-native-patch-v2", StringComparison.Ordinal))
+        {
+            return contents;
+        }
+
+        return $"{contents}{Environment.NewLine}{LoginBundlePatch}";
     }
 
     private static string EnsureHelpers(string contents)
