@@ -24,17 +24,18 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 
 | Item | Value |
 | --- | --- |
-| Plugin version | `0.1.1` |
+| Plugin version | `0.1.3` |
 | Target Jellyfin ABI | `10.11.10.0` |
 | Target framework | `net9.0` |
-| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.1.zip` |
-| SHA256 | `8A4C35385535264D5F2073E774777D48` |
+| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.3.zip` |
+| SHA256 | `A59433A9388AD77056246A2663A1ABE9B2A84BB81FBF9013CD4A116DEC4BAD52` |
 
 ## Installation
 
 ### Prerequisite For Login-Page Patching
 
 Install **File Transformation** if you want the plugin to modify Jellyfin's login page directly. The public `/signup.html` page still works without it.
+After updating login-page patching, restart Jellyfin and hard refresh the browser or clear Jellyfin site data so cached web bundles are reloaded.
 
 Add this repository in Jellyfin, then install **File Transformation** from the catalog:
 
@@ -66,7 +67,7 @@ Repository source: [Piglit09/jellyfin-plugin-signup-repo](https://github.com/Pig
 ```powershell
 dotnet build Jellyfin.Plugin.Signup.csproj -c Release
 dotnet publish Jellyfin.Plugin.Signup.csproj -c Release -o artifacts\publish
-Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.1.zip -Force
+Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.3.zip -Force
 ```
 
 ## Configuration
@@ -156,7 +157,7 @@ For existing Jellyfin users, add their email in the **Email & Users** tab. Signu
 `manifest.template.json` contains the current plugin manifest entry. Before publishing a public release, replace the placeholder release URL:
 
 ```json
-"sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/v0.1.1/Jellyfin.Plugin.Signup_0.1.1.zip"
+"sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/v0.1.3/Jellyfin.Plugin.Signup_0.1.3.zip"
 ```
 
 with the real GitHub release URL.
@@ -183,4 +184,4 @@ $script | node --check
 
 ## Status
 
-This is an early `0.1.1` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.
+This is an early `0.1.3` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.
