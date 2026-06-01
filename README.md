@@ -28,7 +28,7 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 | Target Jellyfin ABI | `10.11.10.0` |
 | Target framework | `net9.0` |
 | Package | `artifacts/Jellyfin.Plugin.Signup_0.1.1.zip` |
-| SHA256 | `69193DD54418E2356C6662FEF8EB4599F7722C04336725E88843E51C49A0023E` |
+| SHA256 | `8A4C35385535264D5F2073E774777D48` |
 
 ## Installation
 
