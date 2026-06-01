@@ -14,8 +14,8 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 - Password reset by email code verification
 - Signup-created user email tracking
 - Admin-managed email mappings for existing Jellyfin users so password resets can work for them too
-- Configurable Jellyfin login-page signup button
-- Plugin password reset replacement for the Jellyfin login page
+- Native Jellyfin login-page signup button injection through File Transformation
+- Plugin password reset replacement for the Jellyfin login page's stock forgot password action
 - Public signup page appearance customization
 - SMTP email delivery with test email support
 - Signup/rate-limit cleanup for pending verifications, reset codes, and failed attempts
@@ -24,13 +24,23 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 
 | Item | Value |
 | --- | --- |
-| Plugin version | `0.1.0` |
+| Plugin version | `0.1.1` |
 | Target Jellyfin ABI | `10.11.10.0` |
 | Target framework | `net9.0` |
-| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.0.zip` |
-| SHA256 | `9E046C5852BA276BAF31FCDEFADCFC3F5E664B71BA7A56CF4C65930087648E38` |
+| Package | `artifacts/Jellyfin.Plugin.Signup_0.1.1.zip` |
+| SHA256 | `69193DD54418E2356C6662FEF8EB4599F7722C04336725E88843E51C49A0023E` |
 
 ## Installation
+
+### Prerequisite For Login-Page Patching
+
+Install **File Transformation** if you want the plugin to modify Jellyfin's login page directly. The public `/signup.html` page still works without it.
+
+Add this repository in Jellyfin, then install **File Transformation** from the catalog:
+
+```text
+https://www.iamparadox.dev/jellyfin/plugins/manifest.json
+```
 
 Install Jellyfin Signup from the plugin repository:
 
@@ -56,7 +66,7 @@ Repository source: [Piglit09/jellyfin-plugin-signup-repo](https://github.com/Pig
 ```powershell
 dotnet build Jellyfin.Plugin.Signup.csproj -c Release
 dotnet publish Jellyfin.Plugin.Signup.csproj -c Release -o artifacts\publish
-Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.0.zip -Force
+Compress-Archive -Path artifacts\publish\* -DestinationPath artifacts\Jellyfin.Plugin.Signup_0.1.1.zip -Force
 ```
 
 ## Configuration
@@ -69,7 +79,7 @@ Open the plugin configuration page from the Jellyfin dashboard.
 - Require or disable invite codes.
 - Copy the public signup URL.
 - Configure the Jellyfin login-page signup button.
-- Replace Jellyfin's login-page forgot password button with the plugin reset flow.
+- Replace Jellyfin's login-page forgot password action with the plugin reset flow.
 - Choose the default policy preset for public signups.
 - Set default folder IDs for new users.
 
@@ -146,7 +156,7 @@ For existing Jellyfin users, add their email in the **Email & Users** tab. Signu
 `manifest.template.json` contains the current plugin manifest entry. Before publishing a public release, replace the placeholder release URL:
 
 ```json
-"sourceUrl": "https://github.com/OWNER/REPOSITORY/releases/download/v0.1.0/Jellyfin.Plugin.Signup_0.1.0.zip"
+"sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/v0.1.1/Jellyfin.Plugin.Signup_0.1.1.zip"
 ```
 
 with the real GitHub release URL.
@@ -173,4 +183,4 @@ $script | node --check
 
 ## Status
 
-This is an early `0.1.0` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.
+This is an early `0.1.1` plugin. Test on a non-critical Jellyfin instance before using it for production account creation.

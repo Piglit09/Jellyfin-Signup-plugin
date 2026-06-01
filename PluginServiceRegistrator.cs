@@ -15,5 +15,6 @@ public sealed class PluginServiceRegistrator : IPluginServiceRegistrator
     {
         serviceCollection.AddSingleton<ISignupService, SignupService>();
         serviceCollection.AddHostedService<SignupCleanupService>();
+        serviceCollection.AddHostedService<SignupFileTransformationRegistrationService>();
     }
 }

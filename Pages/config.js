@@ -46,20 +46,6 @@ export default function (view) {
         return ApiClient.getUrl('signup.html');
     }
 
-    function publicResetUrl() {
-        return `${publicSignupUrl()}?reset=1`;
-    }
-
-    function escapeHtml(value) {
-        return String(value || '').replace(/[&<>"']/g, character => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[character]));
-    }
-
     function escapeRegex(value) {
         return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
@@ -74,35 +60,9 @@ export default function (view) {
         return String(disclaimer || '').replace(pattern, '').trim();
     }
 
-    function buildManagedLoginPasswordReset(settings) {
-        const email = settings.emailSettings || {};
-        const shouldShowReset = !!email.enabled;
-
-        if (!shouldShowReset) {
-            return '';
-        }
-
-        return `${managedButtonStart}
-<style>
-#loginPage .btnForgotPassword { display: none !important; }
-#loginPage .loginDisclaimerContainer { margin-top: .5em !important; width: 100% !important; }
-#loginPage .loginDisclaimer { width: min(40em, calc(100vw - 4em)) !important; max-width: 100% !important; }
-</style>
-<div class="jellyfin-signup-login-actions" style="display:grid;gap:.45em;margin:.5em auto 0;width:min(40em,calc(100vw - 4em));min-width:min(28em,calc(100vw - 4em));max-width:100%;text-align:center;">
-    <a href="${escapeHtml(publicResetUrl())}" style="box-sizing:border-box;display:flex!important;width:100%;min-height:2.7em;align-items:center;justify-content:center;border:0;border-radius:.2em;padding:.75em 1em;background:#303030;color:#fff!important;text-decoration:none!important;font-weight:700;">Forgot Password</a>
-</div>
-${managedButtonEnd}`;
-    }
-
-    async function syncBrandingSignupButton(settings) {
-        const loginButton = settings.loginButtonSettings || {};
-        const shouldShow = !!settings.enabled && loginButton.enabled !== false;
+    async function cleanupManagedLoginDisclaimer() {
         const branding = await ApiClient.getNamedConfiguration('branding');
-        const withoutManagedButton = removeManagedSignupButton(branding?.LoginDisclaimer);
-        const loginResetButton = buildManagedLoginPasswordReset(settings);
-        const nextDisclaimer = shouldShow || loginResetButton
-            ? [withoutManagedButton, loginResetButton].filter(Boolean).join('\n\n')
-            : withoutManagedButton;
+        const nextDisclaimer = removeManagedSignupButton(branding?.LoginDisclaimer);
 
         if ((branding?.LoginDisclaimer || '') === nextDisclaimer) {
             return;
@@ -537,10 +497,10 @@ ${managedButtonEnd}`;
         });
 
         try {
-            await syncBrandingSignupButton(state.settings);
-            setMessage('#settingsMessage', 'Settings saved. Login page button synced.');
+            await cleanupManagedLoginDisclaimer();
+            setMessage('#settingsMessage', 'Settings saved. Login page transformations will apply after the login page refreshes.');
         } catch (err) {
-            setMessage('#settingsMessage', err?.message || 'Settings saved, but the login page button could not be synced.', true);
+            setMessage('#settingsMessage', err?.message || 'Settings saved, but the old login disclaimer block could not be cleaned up.', true);
         }
 
         hydrateSettings();

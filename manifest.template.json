@@ -8,12 +8,12 @@
     "category": "General",
     "versions": [
       {
-        "version": "0.1.0.0",
-        "changelog": "Adds public settings so the signup page hides invite codes when not required, tracks Jellyfin user email mappings for reset-code delivery, adds email/user and appearance settings tabs, uses Jellyfin's native login-page signup button when available, replaces the login-page forgot password action with the plugin reset flow, and fixes policy application for Jellyfin 10.11 user creation.",
+        "version": "0.1.1.0",
+        "changelog": "Adds public settings so the signup page hides invite codes when not required, tracks Jellyfin user email mappings for reset-code delivery, adds email/user and appearance settings tabs, registers File Transformation callbacks to inject a native Jellyfin login-page signup button and replace forgot password with the plugin reset flow, and fixes policy application for Jellyfin 10.11 user creation.",
         "targetAbi": "10.11.10.0",
-        "sourceUrl": "https://github.com/OWNER/REPOSITORY/releases/download/v0.1.0/Jellyfin.Plugin.Signup_0.1.0.zip",
-        "checksum": "9E046C5852BA276BAF31FCDEFADCFC3F5E664B71BA7A56CF4C65930087648E38",
-        "timestamp": "2026-05-31T00:00:00Z"
+        "sourceUrl": "https://github.com/Piglit09/jellyfin-plugin-signup-repo/releases/download/v0.1.1/Jellyfin.Plugin.Signup_0.1.1.zip",
+        "checksum": "69193DD54418E2356C6662FEF8EB4599F7722C04336725E88843E51C49A0023E",
+        "timestamp": "2026-06-01T00:00:00Z"
       }
     ]
   }

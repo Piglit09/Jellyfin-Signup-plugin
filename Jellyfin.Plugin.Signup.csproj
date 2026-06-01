@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Piggie</Authors>
     <Description>Invite-based public signup and password reset for Jellyfin.</Description>
   </PropertyGroup>
