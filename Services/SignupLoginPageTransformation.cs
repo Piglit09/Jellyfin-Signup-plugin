@@ -62,7 +62,7 @@ function loadJellyfinSignupButton(context, apiClient) {
     private const string LoginBundlePatch = """
 
 ;(() => {
-    const patchMarker = 'jellyfin-signup-login-native-patch-v2';
+    const patchMarker = 'jellyfin-signup-login-native-patch-v4';
 
     if (window[patchMarker]) {
         return;
@@ -151,30 +151,23 @@ function loadJellyfinSignupButton(context, apiClient) {
             button.dataset.signupUrl = getSignupUrl(settings.targetUrl);
             button.classList.remove('hide');
         } catch {
-            button.classList.add('hide');
-            button.dataset.signupUrl = '';
+            button.dataset.signupUrl = getSignupUrl();
+            button.classList.remove('hide');
         }
-    }
-
-    function createSignupButton() {
-        const button = document.createElement('button', { is: 'emby-button' });
-        button.setAttribute('is', 'emby-button');
-        button.type = 'button';
-        button.className = 'raised button-submit block btnSignup emby-button hide';
-
-        const label = document.createElement('span');
-        label.textContent = 'Create Account';
-        button.appendChild(label);
-
-        return button;
     }
 
     function ensureSignupButton(container, forgotPasswordButton) {
         let signupButton = container.querySelector('.btnSignup');
 
         if (!signupButton) {
-            signupButton = createSignupButton();
-            container.insertBefore(signupButton, forgotPasswordButton);
+            forgotPasswordButton.insertAdjacentHTML(
+                'beforebegin',
+                '<button is="emby-button" type="button" class="raised button-submit block btnSignup emby-button" data-signup-url="' + getSignupUrl() + '"><span>Create Account</span></button>');
+            signupButton = container.querySelector('.btnSignup');
+        }
+
+        if (!signupButton) {
+            return;
         }
 
         if (signupButton.dataset.jellyfinSignupBound !== 'true') {
@@ -222,8 +215,12 @@ function loadJellyfinSignupButton(context, apiClient) {
         }
 
         ensureStyle();
-        ensureSignupButton(container, forgotPasswordButton);
-        patchForgotPassword(forgotPasswordButton);
+        try {
+            ensureSignupButton(container, forgotPasswordButton);
+            patchForgotPassword(forgotPasswordButton);
+        } catch {
+            // Keep the observer alive if Jellyfin re-renders the login form mid-patch.
+        }
     }
 
     const observer = new MutationObserver(patchLoginPage);
@@ -232,6 +229,7 @@ function loadJellyfinSignupButton(context, apiClient) {
     document.addEventListener('DOMContentLoaded', patchLoginPage);
     document.addEventListener('viewshow', patchLoginPage, true);
     window.addEventListener('hashchange', patchLoginPage);
+    window.setInterval(patchLoginPage, 1000);
     patchLoginPage();
 })();
 """;
@@ -283,7 +281,7 @@ function loadJellyfinSignupButton(context, apiClient) {
     {
         var contents = payload.Contents ?? string.Empty;
 
-        if (contents.Contains("jellyfin-signup-login-native-patch-v2", StringComparison.Ordinal))
+        if (contents.Contains("jellyfin-signup-login-native-patch-v4", StringComparison.Ordinal))
         {
             return contents;
         }

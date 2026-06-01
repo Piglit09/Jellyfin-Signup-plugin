@@ -13,7 +13,7 @@ public sealed class SignupFileTransformationRegistrationService : BackgroundServ
 {
     private static readonly Guid LoginHtmlTransformationId = Guid.Parse("0eeaf977-6a35-4b8b-bc23-7ec78a957e0b");
     private static readonly Guid LoginJsTransformationId = Guid.Parse("d92fa14b-09cc-4a6e-912c-0f8f7d9f51e7");
-    private static readonly Guid LoginBundleTransformationId = Guid.Parse("a7e7f7b1-2c65-49d1-b2cc-59c4d3018c2f");
+    private static readonly Guid LoginBundleTransformationId = Guid.Parse("dfdc93e5-e337-4519-9155-51b289de7fc7");
     private static readonly TimeSpan InitialDelay = TimeSpan.FromSeconds(2);
     private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(5);
     private const int MaxAttempts = 24;
