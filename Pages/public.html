@@ -437,6 +437,17 @@
         signupTab.addEventListener('click', () => useTab('signup'));
         resetTab.addEventListener('click', () => useTab('reset'));
 
+        function applyInitialModeFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const resetMode = params.get('reset') === '1'
+                || params.get('mode') === 'reset'
+                || params.get('tab') === 'reset';
+
+            if (resetMode && !params.get('verify')) {
+                useTab('reset');
+            }
+        }
+
         signupForm.addEventListener('submit', async event => {
             event.preventDefault();
             const data = Object.fromEntries(new FormData(signupForm).entries());
@@ -508,7 +519,10 @@
                 .catch(err => setMessage(err.message, 'error'));
         }
 
-        loadPublicSettings().finally(verifyEmailFromUrl);
+        loadPublicSettings().finally(() => {
+            applyInitialModeFromUrl();
+            verifyEmailFromUrl();
+        });
     </script>
 </body>
 </html>

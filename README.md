@@ -15,6 +15,7 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 - Signup-created user email tracking
 - Admin-managed email mappings for existing Jellyfin users so password resets can work for them too
 - Configurable Jellyfin login-page signup button
+- Plugin password reset replacement for the Jellyfin login page
 - Public signup page appearance customization
 - SMTP email delivery with test email support
 - Signup/rate-limit cleanup for pending verifications, reset codes, and failed attempts
@@ -27,7 +28,7 @@ This plugin adds a standalone Jellyfin-branded signup page plus an admin dashboa
 | Target Jellyfin ABI | `10.11.10.0` |
 | Target framework | `net9.0` |
 | Package | `artifacts/Jellyfin.Plugin.Signup_0.1.0.zip` |
-| SHA256 | `FCAF0C265AD7ECAB797EACB60F40D5A0D53571FE4B7D624A9ECDD6E026104771` |
+| SHA256 | `9E046C5852BA276BAF31FCDEFADCFC3F5E664B71BA7A56CF4C65930087648E38` |
 
 ## Installation
 
@@ -68,6 +69,7 @@ Open the plugin configuration page from the Jellyfin dashboard.
 - Require or disable invite codes.
 - Copy the public signup URL.
 - Configure the Jellyfin login-page signup button.
+- Replace Jellyfin's login-page forgot password button with the plugin reset flow.
 - Choose the default policy preset for public signups.
 - Set default folder IDs for new users.
 

@@ -46,6 +46,10 @@ export default function (view) {
         return ApiClient.getUrl('signup.html');
     }
 
+    function publicResetUrl() {
+        return `${publicSignupUrl()}?reset=1`;
+    }
+
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, character => ({
             '&': '&amp;',
@@ -65,33 +69,27 @@ export default function (view) {
         return /^#[0-9a-f]{6}$/i.test(cleaned) ? cleaned.toLowerCase() : fallback;
     }
 
-    function resolveLoginButtonTarget(targetUrl) {
-        const cleaned = (targetUrl || '').trim();
-
-        if (!cleaned) {
-            return publicSignupUrl();
-        }
-
-        if (/^https?:\/\//i.test(cleaned)) {
-            return cleaned;
-        }
-
-        return ApiClient.getUrl(cleaned.replace(/^\/+/, ''));
-    }
-
     function removeManagedSignupButton(disclaimer) {
         const pattern = new RegExp(`${escapeRegex(managedButtonStart)}[\\s\\S]*?${escapeRegex(managedButtonEnd)}`, 'g');
         return String(disclaimer || '').replace(pattern, '').trim();
     }
 
-    function buildManagedSignupButton(settings) {
-        const loginButton = settings.loginButtonSettings || {};
-        const targetUrl = resolveLoginButtonTarget(loginButton.targetUrl);
-        const buttonText = loginButton.text || 'Create Account';
+    function buildManagedLoginPasswordReset(settings) {
+        const email = settings.emailSettings || {};
+        const shouldShowReset = !!email.enabled;
+
+        if (!shouldShowReset) {
+            return '';
+        }
 
         return `${managedButtonStart}
-<div class="jellyfin-signup-login-button" style="margin:.75em auto 0;max-width:20em;text-align:center;">
-    <a href="${escapeHtml(targetUrl)}" class="raised button-submit block">${escapeHtml(buttonText)}</a>
+<style>
+#loginPage .btnForgotPassword { display: none !important; }
+#loginPage .loginDisclaimerContainer { margin-top: .5em !important; width: 100% !important; }
+#loginPage .loginDisclaimer { width: min(40em, calc(100vw - 4em)) !important; max-width: 100% !important; }
+</style>
+<div class="jellyfin-signup-login-actions" style="display:grid;gap:.45em;margin:.5em auto 0;width:min(40em,calc(100vw - 4em));min-width:min(28em,calc(100vw - 4em));max-width:100%;text-align:center;">
+    <a href="${escapeHtml(publicResetUrl())}" style="box-sizing:border-box;display:flex!important;width:100%;min-height:2.7em;align-items:center;justify-content:center;border:0;border-radius:.2em;padding:.75em 1em;background:#303030;color:#fff!important;text-decoration:none!important;font-weight:700;">Forgot Password</a>
 </div>
 ${managedButtonEnd}`;
     }
@@ -101,8 +99,9 @@ ${managedButtonEnd}`;
         const shouldShow = !!settings.enabled && loginButton.enabled !== false;
         const branding = await ApiClient.getNamedConfiguration('branding');
         const withoutManagedButton = removeManagedSignupButton(branding?.LoginDisclaimer);
-        const nextDisclaimer = shouldShow
-            ? [withoutManagedButton, buildManagedSignupButton(settings)].filter(Boolean).join('\n\n')
+        const loginResetButton = buildManagedLoginPasswordReset(settings);
+        const nextDisclaimer = shouldShow || loginResetButton
+            ? [withoutManagedButton, loginResetButton].filter(Boolean).join('\n\n')
             : withoutManagedButton;
 
         if ((branding?.LoginDisclaimer || '') === nextDisclaimer) {
